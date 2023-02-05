@@ -1,32 +1,16 @@
 import express from 'express';
-import ProductManager1 from './ProductManager.js';
-
-
+import routerProduct from './routes/product.routes.js';
 
 const app = express();
-const PORT = 4000;
+const PORT = 8080;
 
+//Middlewares
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/products', async (req, res) => {
+//Routes
+app.use('/api/products', routerProduct);
 
-  const products = await ProductManager1.getProducts();
-  let { limit } = req.query;
-
-  if( limit !== undefined ){
-    console.log(products.slice(0, parseInt(limit)));
-    res.send(`Lista de productos con limite: ${limit} <br> <code>${JSON.stringify(products.slice(0, parseInt(limit)))}</code>`);
-  }else{
-    console.log(products);
-    res.send(`Lista de productos sin limites:<br> <code>${JSON.stringify(products)}</code>`)
-  }
-})
-
-app.get('/products/:pid', async (req, res) => {
-  const product = await ProductManager1.getProductById(parseInt(req.params.pid));
-  console.log(product);
-  res.send(`Resultado búsqueda por id ${req.params.pid}</br><code>${JSON.stringify(product)}</code>`)
-})
 
 app.listen(PORT, () => {
   console.log(`Server on port ${PORT}`);
