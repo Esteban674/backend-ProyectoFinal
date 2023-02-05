@@ -63,6 +63,8 @@ export class ProductManager {
       this.products[index].thumbnail = fields.thumbnail
       this.products[index].code = fields.code
       this.products[index].stock = fields.stock
+      this.products[index].status = fields.status
+      this.products[index].category = fields.category
       await fs.promises.writeFile(`${this.path}`, JSON.stringify(this.products));
       return 'Producto actualizado';
     }else{
