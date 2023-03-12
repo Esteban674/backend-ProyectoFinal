@@ -2,12 +2,18 @@ import { ManagerMongoDB } from "../../../db/mongoDBManager.js";
 import { Schema } from "mongoose";
 
 const messageSchema = new Schema({
-    nombre: String,
+    nombre: {
+        type: String,
+        required: true,
+    },
     email: {
         type: String,
         unique: true
     },
-    message: String
+    message: {
+        type: String,
+        required: true,
+    }
 })
 
 export class ManagerMessageMongoDB extends ManagerMongoDB {
