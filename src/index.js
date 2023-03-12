@@ -5,6 +5,8 @@ import fileDirName from './utils/path.js';
 import { engine } from 'express-handlebars';
 import * as path from 'path';
 import { Server }  from 'socket.io';
+import routerUser from './routes/user.routes.js';
+import mongoose from 'mongoose';
 // import { create } from './express-handlebars'; para servers mas complejos
 
 
@@ -21,11 +23,15 @@ app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', path.resolve(__dirname, './views'));
 
+//Connection Mongoose
+mongoose.connect('mongodb+srv://Esteban674:Electron05@cluster0.3roekgc.mongodb.net/?retryWrites=true&w=majority').then(mensaje => console.log("MongoDB Atlas esta conectado"))
+.catch(error => console.log(error.message));
 
 //Routes
 app.use('/', express.static(__dirname + '/public'));
 app.use('/api/products', routerProduct);
 app.use('/api/carts', routerCart);
+app.use('/users', routerUser);
 
 // app.get('/', (req, res) => {
 
