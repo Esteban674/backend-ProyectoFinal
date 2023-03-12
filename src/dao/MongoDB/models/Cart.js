@@ -1,13 +1,13 @@
-import { ManagerMongoDB } from "../mongoDBManager.js";
+import { ManagerMongoDB } from "../ManagerMongoDB.js";
 import { Schema } from "mongoose";
 
 const cartSchema = new Schema({
-  products: [
-      {
-          id: { type: Number, required: true },
-          quantity: { type: Number, required: true }
-      }
-  ]
+    products: [
+        {
+            id: { type: Number, required: true },
+            quantity: { type: Number, required: true }
+        }
+    ]
 });
 
 export class ManagerCartMongoDB extends ManagerMongoDB {

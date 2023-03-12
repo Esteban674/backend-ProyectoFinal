@@ -18,7 +18,7 @@ export class ManagerMongoDB {
         }
     }
 
-    async addElement(element) { //Agrego 1 o varios elementos
+    async addElement(element) {
         this.#setConnection()
         try {
             return await this.model.create(element)
@@ -46,7 +46,7 @@ export class ManagerMongoDB {
         }
     }
 
-    async getElementById(id) { //Agrego 1 o varios elementos
+    async getElementById(id) { 
         this.#setConnection()
         try {
             return await this.model.findById(id)

@@ -1,46 +1,88 @@
-import { ProductManager } from '../dao/FileSystem/ProductManager.js';
+import { getManagerProducts } from '../dao/daoManager.js';
 
-export const productManager = new ProductManager('./src/dao/FileSystem/models/productos.txt');
-
-const getAllProducts = async (req, res) => {
-  const products = await productManager.getProducts();
-  let { limit } = req.query;
-
-  if( limit !== undefined ){
-    console.log(products.slice(0, parseInt(limit)));
-    res.send(`Lista de productos con limite: ${limit} <br> <code>${JSON.stringify(products.slice(0, parseInt(limit)))}</code>`);
-  }else{
-    console.log(products);
-    res.send(`Lista de productos sin limites:<br> <code>${JSON.stringify(products)}</code>`)
-  }
-};
-
-const getProductById = async (req, res) => {
-  const product = await productManager.getProductById(parseInt(req.params.pid));
-  console.log(product);
-  res.send(`Resultado búsqueda por id ${req.params.pid}</br><code>${JSON.stringify(product)}</code>`);
-};
-
-const addProduct = async (req, res) => {
-  const mensaje = await productManager.addProduct(req.body);
-  res.send(mensaje);
-};
-
-const deleteProduct = async (req, res) => {
-  const mensaje = await productManager.deleteProduct(req.params.pid);
-  res.send(mensaje);
-};
-
-const updateProduct = async (req, res) => {
-  const mensaje = await productManager.updateProduct(req.params.pid, req.body);
-  res.send(mensaje);
-};
-
+const data = await getManagerProducts();
+const managerProducts = new data.ManagerProductMongoDB;
 
 export const productController = {
-  getAllProducts,
-  getProductById,
-  addProduct,
-  deleteProduct,
-  updateProduct,
+
+  getAllProducts: async (req, res) => {
+    try {
+      const products = await managerProducts.getElements();
+      res.status(200).json(products);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send('Internal server error');
+    }
+  },
+  getProductById: async (req, res) => {
+    try {
+      const { pid } = req.params;
+      const product = await managerProducts.getElementById(pid);
+      if (!product) {
+        return res.status(404).send('Product not found');
+      }
+      res.status(200).json(product);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send('Internal server error');
+    }
+  },
+  addProduct: async (req, res) => {
+    try {
+      const { title, description, price, thumbnail, code, stock, status, category } = req.body;
+      const newProduct = {
+        title,
+        description,
+        price,
+        thumbnail,
+        code,
+        stock,
+        status,
+        category,
+      };
+      const product = await managerProducts.addElement(newProduct);
+      res.status(201).json(product);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send('Internal server error');
+    }
+  },
+  updateProduct: async (req, res) => {
+    try {
+      const { pid } = req.params;
+      const { title, description, price, thumbnail, code, stock, status, category } = req.body;
+      const updatedProduct = {
+        title,
+        description,
+        price,
+        thumbnail,
+        code,
+        stock,
+        status,
+        category,
+      };
+      const product = await managerProducts.updateElement(pid, updatedProduct);
+      if (!product) {
+        return res.status(404).send('Product not found');
+      }
+      res.status(200).json(product);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send('Internal server error');
+    }
+  },
+  deleteProduct: async (req, res) => {
+    try {
+      const { pid } = req.params;
+      const product = await managerProducts.deleteElement(pid);
+      if (!product) {
+        return res.status(404).send('Product not found');
+      }
+      res.status(200).json(product);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send('Internal server error');
+    }
+  },
 };
+

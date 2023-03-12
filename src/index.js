@@ -1,7 +1,7 @@
 import "dotenv/config"
 import express from 'express';
 import routerProduct from './routes/product.routes.js';
-import { productManager } from "./controllers/product.controller.js";
+import { productManager } from "./controllers/product.controllerFS.js";
 import routerCart from './routes/cart.routes.js';
 import fileDirName from './utils/path.js';
 import { engine } from 'express-handlebars';
