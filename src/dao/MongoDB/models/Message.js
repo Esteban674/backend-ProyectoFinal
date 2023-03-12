@@ -1,8 +1,8 @@
-import { ManagerMongoDB } from "../../../db/mongoDBManager.js";
+import { ManagerMongoDB } from "../ManagerMongoDB.js";
 import { Schema } from "mongoose";
 
 const messageSchema = new Schema({
-    nombre: {
+    name: {
         type: String,
         required: true,
     },

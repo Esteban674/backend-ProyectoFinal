@@ -1,9 +1,9 @@
 import fs from 'fs';
 
-export class CartController {
+export class CartManager {
   constructor(path) {
     this.path = path;
-    CartController.initFile(this.path);
+    CartManager.initFile(this.path);
   }
 
   async establecerID() {

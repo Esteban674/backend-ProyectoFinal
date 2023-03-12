@@ -1,4 +1,4 @@
-import { ManagerMongoDB } from "../../../db/mongoDBManager.js";
+import { ManagerMongoDB } from "../mongoDBManager.js";
 import { Schema } from "mongoose";
 
 const cartSchema = new Schema({

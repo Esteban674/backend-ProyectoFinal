@@ -1,6 +1,7 @@
 import "dotenv/config"
 import express from 'express';
-import routerProduct, { productManager } from './routes/product.routes.js';
+import routerProduct from './routes/product.routes.js';
+import { productManager } from "./controllers/product.controller.js";
 import routerCart from './routes/cart.routes.js';
 import fileDirName from './utils/path.js';
 import { engine } from 'express-handlebars';
@@ -8,6 +9,7 @@ import * as path from 'path';
 import { Server }  from 'socket.io';
 import routerUser from './routes/user.routes.js';
 import mongoose from 'mongoose';
+import { getManagerMessages } from "./dao/daoManager.js";
 // import { create } from './express-handlebars'; para servers mas complejos
 
 
@@ -25,8 +27,8 @@ app.set('view engine', 'handlebars');
 app.set('views', path.resolve(__dirname, './views'));
 
 //Connection Mongoose
-mongoose.connect('mongodb+srv://Esteban674:Electron05@cluster0.3roekgc.mongodb.net/?retryWrites=true&w=majority').then(mensaje => console.log("MongoDB Atlas esta conectado"))
-.catch(error => console.log(error.message));
+// mongoose.connect('mongodb+srv://Esteban674:Electron05@cluster0.3roekgc.mongodb.net/?retryWrites=true&w=majority').then(mensaje => console.log("MongoDB Atlas esta conectado"))
+// .catch(error => console.log(error.message));
 
 //Routes
 app.use('/', express.static(__dirname + '/public'));
@@ -57,25 +59,33 @@ app.get('/', async (req, res) => {
 })
 
 app.get('/realtimeproducts', async (req, res) => {
-
-  
   res.render('realTimeProducts', {
-    
   });
 })
 
-const server = app.listen(PORT, () => {
-  console.log(`Server on port ${PORT}`);
+app.get('/chat', async (req, res) => {
+  res.render('chat', {
+  });
 })
+
+app.set("port", process.env.PORT || 5000)
+
+const server = app.listen(app.get("port"), () => console.log(`Server on port ${app.get("port")}`))
 
 const io = new Server(server)
 
+const data = await getManagerMessages()
+const managerMessage = new data.ManagerMessageMongoDB;
+
 io.on("connection", async (socket) => {
   console.log("Cliente conectado");
-
-  socket.on('mensaje', info => {
-    console.log(info);
-  })
+  socket.on("message", async (info) => {
+    managerMessage.addElement(info).then(() => {
+        managerMessage.getElements().then((mensajes) => {
+            socket.emit("allMessages", mensajes)
+        })
+    })
+})
 
   socket.broadcast.emit('evento-admin', 'Hola desde server sos el Admin')
 

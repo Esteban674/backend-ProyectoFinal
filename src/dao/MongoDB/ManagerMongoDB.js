@@ -18,6 +18,16 @@ export class ManagerMongoDB {
         }
     }
 
+    async addElement(element) { //Agrego 1 o varios elementos
+        this.#setConnection()
+        try {
+            return await this.model.create(element)
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    }
+
     async addElements(elements) { //Agrego 1 o varios elementos
         this.#setConnection()
         try {
