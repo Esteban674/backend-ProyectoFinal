@@ -1,3 +1,4 @@
+import "dotenv/config"
 import express from 'express';
 import routerProduct, { productManager } from './routes/product.routes.js';
 import routerCart from './routes/cart.routes.js';
