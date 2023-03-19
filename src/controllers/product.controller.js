@@ -1,7 +1,9 @@
-import { getManagerProducts } from '../dao/daoManager.js';
-import { ManagerProductMongoDB } from '../dao/MongoDB/models/Product.js';
+import { getManagerProducts } from "../dao/daoManager.js";
+import { ManagerProductMongoDB } from "../dao/MongoDB/models/Product.js";
+
 const data = await getManagerProducts();
-const managerProducts = new data.ManagerProductMongoDB();
+const managerProducts = new data.ManagerProductMongoDB;
+
 
 export const productController = {
 
@@ -10,14 +12,14 @@ export const productController = {
     try {
       let { limit, page, sort, query } = req.query;
       let result = {};
-      let queryObj = query ? JSON.parse(query) : {};
+      let queryObj = query? JSON.parse(query) : {};
       let options = {
         limit: limit ? parseInt(limit) : 10,
         page: page ? parseInt(page) : 1,
         sort: sort ? { price: parseInt(sort) } : {}
       };
-      let resultQuery = await managerProducts.paginate({},{limit: 3});
-
+      managerProducts.setConnection();
+      let resultQuery = await managerProducts.model.paginate(queryObj, options);
 
       result = {
         status: "success",
@@ -28,8 +30,8 @@ export const productController = {
         page: resultQuery.page,
         hasPrevPage: resultQuery.hasPrevPage,
         hasNextPage: resultQuery.hasNextPage,
-        prevLink: resultQuery.hasPrevPage != false ? `http://localhost:8080/api/products?limit=${options.limit}&page=${parseInt(options.page) - 1}&query=${query}&sort=${options.sort.price ? options.sort.price : 1}` : null,
-        nextLink: resultQuery.hasNextPage != false ? `http://localhost:8080/api/products?limit=${options.limit}&page=${parseInt(options.page) + 1}&query=${query}&sort=${options.sort.price ? options.sort.price : 1}` : null
+        prevLink: resultQuery.hasPrevPage != false ? `http://localhost:8080/api/products?limit=${options.limit}&page=${parseInt(options.page) - 1}&query=${query !== undefined? query : '{}'}&sort=${options.sort.price ? options.sort.price : 1}` : null,
+        nextLink: resultQuery.hasNextPage != false ? `http://localhost:8080/api/products?limit=${options.limit}&page=${parseInt(options.page) + 1}&query=${query !== undefined? query : '{}'}&sort=${options.sort.price ? options.sort.price : 1}` : null
       };
   
       res.status(200).json(result);

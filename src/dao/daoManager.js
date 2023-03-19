@@ -9,7 +9,6 @@ export const getManagerMessages = async () => {
 export const getManagerProducts = async () => {
     const modelProduct = process.env.SELECTEDDB == 1 ? await import('./MongoDB/models/Product.js') :
         await import('./Postgresql/models/Product.js')
-
     return modelProduct
 }
 
