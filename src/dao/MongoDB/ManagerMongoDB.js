@@ -10,7 +10,7 @@ export class ManagerMongoDB {
         this.model = mongoose.model(this.collection, this.schema)
     }
 
-    async #setConnection() {
+    async setConnection() {
         try {
             await mongoose.connect(this.#url)
         } catch (error) {
@@ -19,7 +19,7 @@ export class ManagerMongoDB {
     }
 
     async addElement(element) {
-        this.#setConnection()
+        this.setConnection()
         try {
             return await this.model.create(element)
         } catch (error) {
@@ -29,7 +29,7 @@ export class ManagerMongoDB {
     }
 
     async addElements(elements) { //Agrego 1 o varios elementos
-        this.#setConnection()
+        this.setConnection()
         try {
             return await this.model.insertMany(elements)
         } catch (error) {
@@ -38,7 +38,7 @@ export class ManagerMongoDB {
     }
 
     async getElements() {
-        this.#setConnection()
+        this.setConnection()
         try {
             return await this.model.find()
         } catch (error) {
@@ -47,7 +47,7 @@ export class ManagerMongoDB {
     }
 
     async getElementById(id) { 
-        this.#setConnection()
+        this.setConnection()
         try {
             return await this.model.findById(id)
         } catch (error) {
@@ -56,7 +56,7 @@ export class ManagerMongoDB {
     }
 
     async updateElement(id, info) {
-        this.#setConnection()
+        this.setConnection()
         try {
             return await this.model.findByIdAndUpdate(id, info)
         } catch (error) {
@@ -65,7 +65,7 @@ export class ManagerMongoDB {
     }
 
     async deleteElement(id) {
-        this.#setConnection()
+        this.setConnection()
         try {
             return await this.model.findByIdAndDelete(id)
         } catch (error) {

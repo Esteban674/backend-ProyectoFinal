@@ -1,19 +1,45 @@
 import { getManagerProducts } from '../dao/daoManager.js';
-
+import { ManagerProductMongoDB } from '../dao/MongoDB/models/Product.js';
 const data = await getManagerProducts();
-const managerProducts = new data.ManagerProductMongoDB;
+const managerProducts = new data.ManagerProductMongoDB();
 
 export const productController = {
 
   getAllProducts: async (req, res) => {
+
     try {
-      const products = await managerProducts.getElements();
-      res.status(200).json(products);
+      let { limit, page, sort, query } = req.query;
+      let result = {};
+      let queryObj = query ? JSON.parse(query) : {};
+      let options = {
+        limit: limit ? parseInt(limit) : 10,
+        page: page ? parseInt(page) : 1,
+        sort: sort ? { price: parseInt(sort) } : {}
+      };
+      let resultQuery = await managerProducts.paginate({},{limit: 3});
+
+
+      result = {
+        status: "success",
+        payload: resultQuery.docs,
+        totalPages: resultQuery.totalPages,
+        prevPage: resultQuery.prevPage || null,
+        nextPage: resultQuery.nextPage || null,
+        page: resultQuery.page,
+        hasPrevPage: resultQuery.hasPrevPage,
+        hasNextPage: resultQuery.hasNextPage,
+        prevLink: resultQuery.hasPrevPage != false ? `http://localhost:8080/api/products?limit=${options.limit}&page=${parseInt(options.page) - 1}&query=${query}&sort=${options.sort.price ? options.sort.price : 1}` : null,
+        nextLink: resultQuery.hasNextPage != false ? `http://localhost:8080/api/products?limit=${options.limit}&page=${parseInt(options.page) + 1}&query=${query}&sort=${options.sort.price ? options.sort.price : 1}` : null
+      };
+  
+      res.status(200).json(result);
+  
     } catch (error) {
-      console.log(error);
-      res.status(500).send('Internal server error');
+      res.status(500).json({ status: "error", message: error.message });
     }
-  },
+  }
+  ,
+
   getProductById: async (req, res) => {
     try {
       const { pid } = req.params;

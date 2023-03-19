@@ -26,9 +26,7 @@ app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', path.resolve(__dirname, './views'));
 
-//Connection Mongoose
-// mongoose.connect('mongodb+srv://Esteban674:Electron05@cluster0.3roekgc.mongodb.net/?retryWrites=true&w=majority').then(mensaje => console.log("MongoDB Atlas esta conectado"))
-// .catch(error => console.log(error.message));
+
 
 //Routes
 app.use('/', express.static(__dirname + '/public'));
@@ -36,19 +34,6 @@ app.use('/api/products', routerProduct);
 app.use('/api/carts', routerCart);
 app.use('/users', routerUser);
 
-// app.get('/', (req, res) => {
-
-//   const user ={
-//     nombre: 'Esteban',
-//     email: 'esteban@gmail.com'
-//   }
-
-//   res.render('home', {
-//     titulo: 'Coder',
-//     mensaje: 'Mundo',
-//     user: user // o user
-//   });
-// })
 
 app.get('/', async (req, res) => {
   const products = await productManager.getProducts();

@@ -1,5 +1,6 @@
 import { ManagerMongoDB } from "../ManagerMongoDB.js";
 import { Schema } from "mongoose";
+import paginate from 'mongoose-paginate-v2';
 
 const productSchema = new Schema({
   title: { type: String, required: true },
@@ -11,6 +12,8 @@ const productSchema = new Schema({
   status: { type: Boolean, default: true },
   category: { type: String, required: true }
 });
+
+productSchema.plugin(paginate);
 
 export class ManagerProductMongoDB extends ManagerMongoDB {
     constructor() {
