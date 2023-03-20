@@ -2,13 +2,20 @@ import { ManagerMongoDB } from "../ManagerMongoDB.js";
 import { Schema } from "mongoose";
 
 const cartSchema = new Schema({
-    products: [
+    products: {
+        type: [
         {
-            id: { type: Number, required: true },
+            product: { type: Schema.Types.ObjectId, ref: 'products' },
             quantity: { type: Number, required: true }
         }
-    ]
+        ],
+        default:[],
+    }
 });
+
+cartSchema.pre('find', function (){
+    this.populate('products.product');
+})
 
 export class ManagerCartMongoDB extends ManagerMongoDB {
     constructor() {

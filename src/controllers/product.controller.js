@@ -1,5 +1,4 @@
 import { getManagerProducts } from "../dao/daoManager.js";
-import { ManagerProductMongoDB } from "../dao/MongoDB/models/Product.js";
 
 const data = await getManagerProducts();
 const managerProducts = new data.ManagerProductMongoDB;

@@ -7,7 +7,9 @@ export const cartController = {
 
   getCarts: async (req, res) => {
     try {
-      const carts = await managerCarts.getElements().populate('products.id');
+      managerCarts.setConnection();
+      const carts = await managerCarts.model.find().populate("products.product");
+      console.log(JSON.stringify(carts));
       res.status(200).json(carts);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -17,7 +19,8 @@ export const cartController = {
   getCartById: async (req, res) => {
     const { cid } = req.params;
     try {
-      const cart = await managerCarts.getElementById(cid).populate('products.id');
+      managerCarts.setConnection();
+      const cart = await managerCarts.model.findById(cid).populate("products.product");
       if (!cart) throw new Error("Cart not found");
       res.status(200).json(cart);
     } catch (error) {
@@ -38,7 +41,7 @@ export const cartController = {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
     try {
-      const cart = await managerCarts.getElementById(cid).populate('products.id');
+      const cart = await managerCarts.getElementById(cid);
       if (!cart) throw new Error("Cart not found");
       const product = { id: pid, quantity: quantity };
       cart.products.push(product);
@@ -52,7 +55,7 @@ export const cartController = {
   deleteProductFromCart: async (req, res) => {
     const { cid, pid } = req.params;
     try {
-      const cart = await managerCarts.getElementById(cid).populate('products.id');
+      const cart = await managerCarts.getElementById(cid);
       if (!cart) throw new Error("Cart not found");
       cart.products = cart.products.filter(product => product.id != pid);
       await managerCarts.updateElement(cid, cart);
@@ -78,7 +81,7 @@ export const cartController = {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
     try {
-      const cart = await managerCarts.getElementById(cid).populate('products.id');
+      const cart = await managerCarts.getElementById(cid);
       if (!cart) throw new Error("Cart not found");
       cart.products = cart.products.map(product => {
         if (product.id == pid) {
