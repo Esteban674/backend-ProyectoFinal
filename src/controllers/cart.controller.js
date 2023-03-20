@@ -43,7 +43,7 @@ export const cartController = {
     try {
       const cart = await managerCarts.getElementById(cid);
       if (!cart) throw new Error("Cart not found");
-      const product = { id: pid, quantity: quantity };
+      const product = { product: pid, quantity: quantity, id: pid };
       cart.products.push(product);
       await managerCarts.updateElement(cid, cart);
       res.status(200).json(cart);
@@ -57,7 +57,7 @@ export const cartController = {
     try {
       const cart = await managerCarts.getElementById(cid);
       if (!cart) throw new Error("Cart not found");
-      cart.products = cart.products.filter(product => product.id != pid);
+      cart.products = cart.products.filter(product => product.product != pid);
       await managerCarts.updateElement(cid, cart);
       res.status(200).json(cart);
     } catch (error) {
@@ -84,24 +84,13 @@ export const cartController = {
       const cart = await managerCarts.getElementById(cid);
       if (!cart) throw new Error("Cart not found");
       cart.products = cart.products.map(product => {
-        if (product.id == pid) {
+        if (product.product == pid) {
           return { ...product, quantity };
         }
         return product;
       });
       await managerCarts.updateElement(cid, cart);
       res.status(200).json(cart);
-    } catch (error) {
-      res.status(404).json({ message: error.message });
-    }
-  },
-  updateCart: async (req, res) => {
-    const { cid } = req.params;
-    try {
-      const cart = await managerCarts.getElementById(cid);
-      if (!cart) throw new Error("Cart not found");
-      await managerCarts.updateElement(cid, { products: req.body });
-      res.status(200).json({ message: "Cart updated successfully" });
     } catch (error) {
       res.status(404).json({ message: error.message });
     }
@@ -114,18 +103,28 @@ export const cartController = {
       if (!cart) throw new Error("Cart not found");
       const { products } = req.body;
       if (!Array.isArray(products)) throw new Error("Invalid request format");
+      // crea una nuevo array para almacenar los productos actualizados
+      const updatedProducts = [];
+      // recorre los nuevos productos y actualiza las cantidades de productos existentes o agrega nuevos productos
       products.forEach((product) => {
-        const index = cart.products.findIndex(
-          (p) => p.id === product.id && p.id instanceof ObjectId
-        );
+        const index = cart.products.findIndex((p) => p.product === product.product && p.product instanceof ObjectId);
         if (index >= 0) {
-          cart.products[index].quantity = product.quantity;
+          // Si el producto ya existe actualiza la cantidad
+          const updatedQuantity = cart.products[index].quantity + product.quantity;
+          // crea un nuevo producto con la cantidad actualizada pero mantiene el id del producto existente
+          const updatedProduct = { product: cart.products[index].product, quantity: updatedQuantity };
+          updatedProducts.push(updatedProduct);
+        } else {
+          // Si el producto no existe lo agrega al array
+          updatedProducts.push(product);
         }
       });
+      // Actualiza el carrito con el nuevo array de productos
+      cart.products = updatedProducts;
       await managerCarts.updateElement(cid, cart);
       res.status(200).json({ message: "Cart products updated successfully" });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
-  },
+  }
 }
