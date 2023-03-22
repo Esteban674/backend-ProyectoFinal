@@ -53,6 +53,11 @@ app.get('/chat', async (req, res) => {
   });
 })
 
+app.get('/products', async (req, res) => {
+  res.render('products', {
+  });
+})
+
 app.set("port", process.env.PORT || 5000)
 
 const server = app.listen(app.get("port"), () => console.log(`Server on port ${app.get("port")}`))
