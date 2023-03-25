@@ -1,55 +1,58 @@
-const navbar = document.querySelector('nav');
-const categorySelect = document.querySelector('#category');
-const limitSelect = document.querySelector('#limit');
-const sortSelect = document.querySelector('#sort');
+const productsContainer = document.getElementById("products-container");
+const productsTemplate = document.getElementById("products-template").innerHTML;
+const limitSelect = document.getElementById("limit");
+const sortSelect = document.getElementById("sort");
+const categoryLinks = document.querySelectorAll("[data-category]");
 
-const navLinks = document.querySelectorAll('nav a');
-let category = '';
+let page = 1;
+let limit = limitSelect.value;
+let sort = sortSelect.value;
+let category = "";
+let currentPage;
 
-navLinks.forEach(link => {
-  link.addEventListener('click', e => {
-    e.preventDefault();
-    category = link.dataset.category;
-    fetchProducts();
-  });
-});
-
-limitSelect.addEventListener('change', fetchProducts);
-sortSelect.addEventListener('change', fetchProducts);
+function renderProducts(products) {
+  const data = {
+    products: products.payload,
+    pagination: products,
+    category: category,
+    currentPage: currentPage
+  };
+  console.log(data);
+  const html = Handlebars.compile(productsTemplate)(data);
+  productsContainer.innerHTML = html;
+}
 
 function fetchProducts() {
-  const limit = limitSelect.value;
-  const sort = sortSelect.value;
-  const page =  1;
   const url = `http://localhost:8080/api/products?limit=${limit}&page=${page}&sort=${sort}&category=${category}`;
-  console.log(url);
+
   fetch(url)
     .then(response => response.json())
     .then(data => {
-      const products = data.payload;
-      const pagination = data;
-
-      renderProducts(products, pagination);
+      currentPage = data.page;
+      renderProducts(data);
     })
     .catch(error => console.error(error));
 }
 
-function renderProducts(products, pagination) {
+limitSelect.addEventListener("change", () => {
+  limit = limitSelect.value;
+  page = 1;
+  fetchProducts();
+});
 
-  const context = {
-    products: products,
-    pagination: pagination,
-    category: category
-  };
+sortSelect.addEventListener("change", () => {
+  sort = sortSelect.value;
+  page = 1;
+  fetchProducts();
+});
 
-  if (products.length > 0) {
-    const source = document.getElementById("products-template").innerHTML;
-    console.log(source);
-    const template = Handlebars.compile(source);
-    const html = template(context);
-    document.querySelector('#products-container').innerHTML = html;
-  } else {
-    document.querySelector('#products-container').innerHTML = "No se encontraron productos.";
-  }
-}
+categoryLinks.forEach(link => {
+  link.addEventListener("click", event => {
+    event.preventDefault();
+    category = link.getAttribute("data-category");
+    page = 1;
+    fetchProducts();
+  });
+});
 
+fetchProducts();
