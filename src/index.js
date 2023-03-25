@@ -1,5 +1,9 @@
 import "dotenv/config"
 import express from 'express';
+import session from 'express-session';
+import cookieParser from "cookie-parser";
+import MongoStore from 'connect-mongo';
+import passport from 'passport'
 import routerProduct from './routes/product.routes.js';
 import { productManager } from "./controllers/product.controllerFS.js";
 import routerCart from './routes/cart.routes.js';
@@ -8,13 +12,14 @@ import { engine } from 'express-handlebars';
 import * as path from 'path';
 import { Server }  from 'socket.io';
 import routerUser from './routes/user.routes.js';
+import routerSession from './routes/session.routes.js';
 import mongoose from 'mongoose';
 import { getManagerMessages } from "./dao/daoManager.js";
+import initializePassport from './config/passport.js'
 // import { create } from './express-handlebars'; para servers mas complejos
 
 
 const app = express();
-const PORT = 8080;
 
 const { __dirname } = fileDirName(import.meta);
 
@@ -28,12 +33,53 @@ app.set('views', path.resolve(__dirname, './views'));
 
 
 
+//Cookies
+app.use(cookieParser(process.env.SIGNED_COOKIE));
+
+//Session
+app.use(session({
+  store: MongoStore.create({
+      mongoUrl: process.env.MONGODBURL,
+      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+      ttl: 180,
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true
+}))
+
+//Passport
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
+
 //Routes
 app.use('/', express.static(__dirname + '/public'));
 app.use('/api/products', routerProduct);
 app.use('/api/carts', routerCart);
-app.use('/users', routerUser);
+app.use('/user', routerUser);
+app.use('/api/session', routerSession)
 
+//Rutas de cookies
+app.get('/setCookie', (req, res) =>{
+  res.cookie('CookieEcommerce', 'Esta es una cookie del e-commerce', {maxAge: 10000}).send('Cookie')
+})
+
+app.get('/setSignedCookie', (req, res) =>{
+  res.cookie('SignedCookie', 'Esta es una cookie del e-commerce firmada', {maxAge: 10000, signed: true}).send('Cookie Firmada')
+})
+
+app.get('/getCookie', (req, res) => {
+  res.send(req.cookies)
+})
+
+app.get('/getSignedCookie', (req, res) => {
+  res.send(req.signedCookies)
+})
+
+app.get('/deleteCookie', (req, res) => {
+  res.clearCookie('CookieEcommerce').send('Cookie removed')
+})
 
 app.get('/', async (req, res) => {
   const products = await productManager.getProducts();

@@ -1,15 +1,10 @@
-import { Router } from 'express';
-import { userModel } from '../dao/FileSystem/models/user.js';
+import { Router } from "express";
+import { createUser, getUserById } from "../controllers/user.controller.js";
+import passport from "passport";
 
-const routerUser = Router();
+const routerUser = Router()
 
-routerUser.get('/', async (req, res) => {
-  try {
-    const users = await userModel.find()
-    res.send({resultado: 'success', valores: users})
-  } catch (error) {
-    res.send("Error en consulta a users, mensaje: ", error.message)
-  }
-})
+routerUser.post("/register", passport.authenticate('register'), createUser)
+routerUser.get("/:id", getUserById)
 
-export default routerUser;
+export default routerUser
