@@ -1,4 +1,13 @@
 <div>
+  <script id="user-template" type="text/x-handlebars-template">
+    <p>Nombre: {{user.first_name}} {{user.last_name}}</p>
+  </script>
+  {{#if user}}
+  <div id="user-container"></div>
+  {{else}}
+  <a href="/login">Iniciar sesión</a>
+  {{/if}}
+
   <h1>Lista de Productos</h1>
   <nav>
     <ul>
@@ -24,7 +33,6 @@
     </select>
   </form>
 
-
   <div id="products-container"></div>
 
   {{#if pagination}}
@@ -38,10 +46,9 @@
     {{/if}}
   </div>
   {{/if}}
-</div>
 
-<script id="products-template" type="text/x-handlebars-template">
-  {{#if products}}
+  <script id="products-template" type="text/x-handlebars-template">
+    {{#if products}}
     {{#each products}}
     <div>
       <h2>{{title}}</h2>
@@ -50,10 +57,11 @@
       <p>Precio: ${{price}}</p>
     </div>
     {{/each}}
-  {{else}}
+    {{else}}
     <p>No se encontraron productos.</p>
-  {{/if}}
-</script>
+    {{/if}}
+  </script>
 
-<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
-<script src="js/products.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+  <script type="module" src="js/products.js"></script>
+</div>

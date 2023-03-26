@@ -104,6 +104,16 @@ app.get('/products', async (req, res) => {
   });
 })
 
+app.get('/register', async (req, res) => {
+  res.render('register', {
+  });
+})
+
+app.get('/login', async (req, res) => {
+  res.render('login', {
+  });
+})
+
 app.set("port", process.env.PORT || 5000)
 
 const server = app.listen(app.get("port"), () => console.log(`Server on port ${app.get("port")}`))

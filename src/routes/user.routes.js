@@ -8,3 +8,4 @@ routerUser.post("/register", passport.authenticate('register'), createUser)
 routerUser.get("/:id", getUserById)
 
 export default routerUser
+
