@@ -18,14 +18,14 @@ const initializePassport = () => {
                 }
                 const passwordHash = createHash(password)
 
-                const userCreated = await managerUser.addElements([{
+                const userCreated = await managerUser.addElement({
                     first_name: first_name,
                     last_name: last_name,
                     email: email,
                     age: age,
                     password: passwordHash
-                }])
-                console.log(userCreated)
+                })
+
                 return done(null, userCreated)
             } catch (error) {
                 return done(error)
@@ -34,7 +34,7 @@ const initializePassport = () => {
 
     //Inicializar la session del user
     passport.serializeUser((user, done) => {
-        done(null, user._id)
+        done(null, user._id );
     })
 
     //Eliminar la session del user
@@ -52,6 +52,7 @@ const initializePassport = () => {
                 return done(null, false)
             }
             if (validatePassword(password, user.password)) { //Usuario y contraseña validos
+
                 return done(null, user)
             }
 

@@ -32,7 +32,6 @@ app.set('view engine', 'handlebars');
 app.set('views', path.resolve(__dirname, './views'));
 
 
-
 //Cookies
 app.use(cookieParser(process.env.SIGNED_COOKIE));
 
@@ -59,6 +58,7 @@ app.use('/api/products', routerProduct);
 app.use('/api/carts', routerCart);
 app.use('/user', routerUser);
 app.use('/api/session', routerSession)
+
 
 //Rutas de cookies
 app.get('/setCookie', (req, res) =>{
