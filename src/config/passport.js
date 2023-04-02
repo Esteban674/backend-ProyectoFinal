@@ -1,5 +1,6 @@
 import local from 'passport-local'
 import passport from 'passport'
+import GitHubStrategy from 'passport-github2'
 import { managerUser } from '../controllers/user.controller.js'
 import { createHash, validatePassword } from '../utils/bcrypt.js'
 
@@ -58,6 +59,31 @@ const initializePassport = () => {
 
             return done(null, false) //Contraseña no valida
 
+        } catch (error) {
+            return done(error)
+        }
+    }))
+
+    passport.use('github', new GitHubStrategy({
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        callbackURL: process.env.CALLBACK_URL
+    }, async (accessToken, refreshToken, profile, done) => {
+        try {
+            console.log(profile);
+            const user = await managerUser.getElementByEmail(profile._json.email);
+            if(user){
+                done(null, user)
+            }else{
+                const userCreated = await managerUser.addElement({
+                    first_name: profile._json.name,
+                    last_name: '',
+                    email: profile._json.email,
+                    age: 20,
+                    password: ''
+                })
+                done(null, userCreated)
+            }
         } catch (error) {
             return done(error)
         }

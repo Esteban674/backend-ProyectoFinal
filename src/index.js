@@ -16,6 +16,7 @@ import routerSession from './routes/session.routes.js';
 import mongoose from 'mongoose';
 import { getManagerMessages } from "./dao/daoManager.js";
 import initializePassport from './config/passport.js'
+import routerGithub from "./routes/github.routes.js";
 // import { create } from './express-handlebars'; para servers mas complejos
 
 
@@ -58,6 +59,7 @@ app.use('/api/products', routerProduct);
 app.use('/api/carts', routerCart);
 app.use('/user', routerUser);
 app.use('/api/session', routerSession)
+app.use('/session', routerGithub)
 
 
 //Rutas de cookies
