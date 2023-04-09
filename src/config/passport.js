@@ -2,7 +2,7 @@ import local from 'passport-local'
 import passport from 'passport'
 import GitHubStrategy from 'passport-github2'
 import { managerUser } from '../controllers/user.controller.js'
-import { managerCart } from '../controllers/cart.controller.js'
+import { managerCarts } from '../controllers/cart.controller.js'
 import { createHash, validatePassword } from '../utils/bcrypt.js'
 
 //Passport se va a trabajar como un middleware
@@ -20,7 +20,7 @@ const initializePassport = () => {
                 }
                 const passwordHash = createHash(password)
                 //crear el carrito 
-                const cart = await cartManager.addElement({ products: [] });
+                const cart = await managerCarts.addElement({ products: [] });
 
                 const userCreated = await managerUser.addElement({
                     first_name: first_name,
