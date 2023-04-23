@@ -1,43 +1,31 @@
-export const getSession = (req, res) => {
-    if (req.session.login) { //Si la sesion esta activa en la BDD
-        res.redirect('/products', 200, {
-            'message': "Bienvenido/a a mi tienda"
-        })
+import { getSessionService, testLoginService, destroySessionService } from "../services/session.services.js";
+
+export const getSession = async (req, res) => {
+    try {
+        if (req.session.login) {
+            return res.redirect("/products", 200, { message: "Bienvenido/a a mi tienda" });
+        }
+        res.redirect("/api/session/login", 500, { message: "Por favor inicie sesión" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-    //No esta activa la sesion
-    res.redirect('/api/session/login', 500, {
-        //Mensaje de logueo
-    })
-}
+};
 
 export const testLogin = async (req, res) => {
-
     try {
-        if (!req.user) {
-            return res.status(401).send({ status: "error", error: "Invalidate User" })
-        }
-        //Genero la session de mi usuario
-        req.session.user = {
-            first_name: req.user.first_name,
-            last_name: req.user.last_name,
-            age: req.user.age,
-            email: req.user.email
-        }
-
-        res.status(200).send({ status: "success", payload: req.user })
-
+        const user = req.user;
+        const sessionData = await testLoginService(user);
+        res.status(200).json({ status: "success", payload: sessionData });
     } catch (error) {
-        res.status(500).send.json({
-            message: error.message
-        })
+        res.status(500).json({ message: error.message });
     }
-}
+};
 
-export const destroySession = (req, res) => {
-    if (req.session.login) {
-        req.session.destroy()
+export const destroySession = async (req, res) => {
+    try {
+        await destroySessionService(req.session);
+        res.redirect("/products", 200, { divMessage: "Hasta luego" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-    res.redirect('/products', 200, {
-        'divMessage': "Hola"
-    })
-}
+};

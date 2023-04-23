@@ -2,7 +2,7 @@ import local from 'passport-local'
 import passport from 'passport'
 import GitHubStrategy from 'passport-github2'
 import { managerUser } from '../services/user.services.js'
-import { managerCarts } from '../controllers/cart.controller.js'
+import { managerCarts } from '../services/cart.services.js'
 import { createHash, validatePassword } from '../utils/bcrypt.js'
 
 //Passport se va a trabajar como un middleware

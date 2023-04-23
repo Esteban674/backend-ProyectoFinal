@@ -1,7 +1,4 @@
-import { getManagerCarts } from "../dao/daoManager.js";
-
-const data = await getManagerCarts();
-export const managerCarts = new data.ManagerCartMongoDB;
+import { managerCarts } from "../services/cart.services.js";
 
 export const cartController = {
 
