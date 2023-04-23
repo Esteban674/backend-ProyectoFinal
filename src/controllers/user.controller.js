@@ -1,40 +1,28 @@
-import { getManagerUsers } from "../dao/daoManager.js";
+import { getUserById, createUser, getUserByEmail } from "../services/user.services.js";
 
-const data = await getManagerUsers()
-export const managerUser = new data.ManagerUserMongoDB
-
-export const createUser = (req, res) => {
-    res.send({ status: "success", message: "User created " })
-}
-
-export const getUserById = async (req, res) => {
-    const { id } = req.params
+export const createUserController = async (req, res) => {
     try {
-        const user = await managerUser.getElementById(id)
-        if (user) {
-            return res.status(200).json({
-                message: user
-            })
-        }
-        return res.status(200).json({
-            message: "Usuario no encontrado"
-        })
+        await createUser(req.body);
+        res.status(201).send({ status: "success", message: "User created" });
     } catch (error) {
-        res.status(500).json({
-            message: error.message
-        })
+        res.status(500).send({ message: error.message });
     }
-}
+};
 
-export const getUserByEmail = async (email) => {
+export const getUserByIdController = async (req, res) => {
     try {
-        const user = await managerUser.getElementByEmail(email)
-        if (user) {
-            return user
-        }
-        return "Usuario no encontrado"
-
+        const user = await getUserById(req.params.id);
+        res.status(200).json({ message: user });
     } catch (error) {
-        return error
+        res.status(500).send({ message: error.message });
     }
-}
+};
+
+export const getUserByEmailController = async (req, res) => {
+    try {
+        const user = await getUserByEmail(req.params.email);
+        res.status(200).json({ message: user });
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};

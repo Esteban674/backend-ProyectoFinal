@@ -1,7 +1,7 @@
 import local from 'passport-local'
 import passport from 'passport'
 import GitHubStrategy from 'passport-github2'
-import { managerUser } from '../controllers/user.controller.js'
+import { managerUser } from '../services/user.services.js'
 import { managerCarts } from '../controllers/cart.controller.js'
 import { createHash, validatePassword } from '../utils/bcrypt.js'
 
