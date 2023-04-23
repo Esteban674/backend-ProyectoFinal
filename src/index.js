@@ -1,4 +1,4 @@
-import "dotenv/config"
+import config from './config/config.js';
 import express from 'express';
 import session from 'express-session';
 import cookieParser from "cookie-parser";
@@ -18,7 +18,6 @@ import { getManagerMessages } from "./dao/daoManager.js";
 import initializePassport from './config/passport.js'
 import routerGithub from "./routes/github.routes.js";
 // import { create } from './express-handlebars'; para servers mas complejos
-
 
 const app = express();
 
