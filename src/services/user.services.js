@@ -22,3 +22,11 @@ export const getUserByEmail = async (email) => {
   }
   return user;
 };
+
+export const getUserByIdCart = async (id) => {
+  const user = await managerUser.getUserByIdCart(id);
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return user;
+};

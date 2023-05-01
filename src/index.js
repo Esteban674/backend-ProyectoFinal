@@ -4,19 +4,15 @@ import session from 'express-session';
 import cookieParser from "cookie-parser";
 import MongoStore from 'connect-mongo';
 import passport from 'passport'
-import routerProduct from './routes/product.routes.js';
 import { productManager } from "./controllers/product.controllerFS.js";
-import routerCart from './routes/cart.routes.js';
 import fileDirName from './utils/path.js';
 import { engine } from 'express-handlebars';
 import * as path from 'path';
 import { Server }  from 'socket.io';
-import routerUser from './routes/user.routes.js';
-import routerSession from './routes/session.routes.js';
 import mongoose from 'mongoose';
 import { getManagerMessages } from "./dao/daoManager.js";
 import initializePassport from './config/passport.js'
-import routerGithub from "./routes/github.routes.js";
+import router from './routes/routes.js';
 // import { create } from './express-handlebars'; para servers mas complejos
 
 const app = express();
@@ -33,7 +29,7 @@ app.set('views', path.resolve(__dirname, './views'));
 
 
 //Cookies
-app.use(cookieParser(process.env.SIGNED_COOKIE));
+app.use(cookieParser(process.env.PRIVATE_KEY_JWT));
 
 //Session
 app.use(session({
@@ -53,12 +49,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 //Routes
+app.use('/', router)
 app.use('/', express.static(__dirname + '/public'));
-app.use('/api/products', routerProduct);
-app.use('/api/carts', routerCart);
-app.use('/user', routerUser);
-app.use('/api/session', routerSession)
-app.use('/session', routerGithub)
 
 
 //Rutas de cookies

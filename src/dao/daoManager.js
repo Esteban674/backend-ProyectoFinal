@@ -24,3 +24,10 @@ export const getManagerUsers = async () => {
 
     return modelUser
 }
+
+export const getManagerTickets = async () => {
+    const modelTicket = process.env.SELECTEDDB == 1 ? await import('./MongoDB/models/Ticket.js') :
+        await import('./Postgresql/models/Ticket.js')
+
+    return modelTicket
+}

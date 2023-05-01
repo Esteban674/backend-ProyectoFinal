@@ -1,7 +1,6 @@
 import { ManagerMongoDB } from "../ManagerMongoDB.js";
 import { Schema } from "mongoose";
 
-ManagerMongoDB
 const userSchema = new Schema({
     first_name: {
         type: String,
@@ -44,6 +43,15 @@ export class ManagerUserMongoDB extends ManagerMongoDB {
         super.setConnection()
         try {
             return await this.model.findOne({ email: email })
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getElementByIdCart(id_cart) {
+        super.setConnection()
+        try {
+            return await this.model.findOne({ id_cart: id_cart })
         } catch (error) {
             return error
         }

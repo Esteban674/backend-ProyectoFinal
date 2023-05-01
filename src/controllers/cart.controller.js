@@ -1,6 +1,18 @@
-import { managerCarts } from "../services/cart.services.js";
+import { cartServices, managerCarts } from "../services/cart.services.js";
+
 
 export const cartController = {
+
+  purchaseCart: async (req, res) => {
+    managerCarts.setConnection();
+    const { cid } = req.params;
+    try {
+      const ticket = await cartServices.purchaseCart(cid);
+      res.status(201).json(ticket);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  },
 
   getCarts: async (req, res) => {
     try {
@@ -17,7 +29,7 @@ export const cartController = {
     const { cid } = req.params;
     try {
       managerCarts.setConnection();
-      const cart = await managerCarts.model.findById(cid).populate("products.product");
+      const cart = await managerCarts.getElementById(cid)
       if (!cart) throw new Error("Cart not found");
       res.status(200).json(cart);
     } catch (error) {

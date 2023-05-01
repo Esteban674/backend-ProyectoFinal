@@ -1,15 +1,39 @@
-import local from 'passport-local'
-import passport from 'passport'
-import GitHubStrategy from 'passport-github2'
-import { managerUser } from '../services/user.services.js'
-import { managerCarts } from '../services/cart.services.js'
-import { createHash, validatePassword } from '../utils/bcrypt.js'
+import local from 'passport-local';
+import passport from 'passport';
+import jwt from 'passport-jwt';
+import GitHubStrategy from 'passport-github2';
+import { managerUser } from '../services/user.services.js';
+import { managerCarts } from '../services/cart.services.js';
+import { createHash, validatePassword } from '../utils/bcrypt.js';
+import { generateToken } from "../utils/jwt.js";
 
 //Passport se va a trabajar como un middleware
-const LocalStrategy = local.Strategy //Defino mi estrategia
+const LocalStrategy = local.Strategy; //Defino mi estrategia
+
+const JWTStrategy = jwt.Strategy;
+const ExtractJWT = jwt.ExtractJwt;
 
 const initializePassport = () => {
-    //Definir donde se aplican mis estrategias
+
+    const cookieExtractor = req => {
+        const token = req.cookies ? req.cookies.jwtCookie : {}
+        return token
+    }
+
+    //Definir donde se aplican mis estrategias    
+    
+    passport.use('jwt', new JWTStrategy({
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), //Extrae el token desde las cookies
+        secretOrKey: process.env.PRIVATE_KEY_JWT 
+    }, async (jwt_payload, done) => {
+        try {
+            return done(null, jwt_payload)
+        } catch (error) {
+            return done(error)
+        }
+
+    }));
+
     passport.use('register', new LocalStrategy(
         { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
             const { first_name, last_name, email, age } = req.body
@@ -28,9 +52,10 @@ const initializePassport = () => {
                     email: email,
                     age: age,
                     password: passwordHash,
-                    cart_id: cart._id
+                    id_cart: cart._id
                 })
-
+                const accessToken = generateToken(userCreated)
+                console.log(accessToken)
                 return done(null, userCreated)
             } catch (error) {
                 return done(error)
@@ -57,7 +82,8 @@ const initializePassport = () => {
                 return done(null, false)
             }
             if (validatePassword(password, user.password)) { //Usuario y contraseña validos
-
+                const accessToken = generateToken(user)
+                console.log(accessToken)
                 return done(null, user);
             }
 
