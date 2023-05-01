@@ -40,6 +40,9 @@ export const cartServices = {
       if (!allProcessed) {
         cart.products = cart.products.filter(product => failedProducts.includes(product.product._id));
         await cart.save();
+      } else if(allProcessed) {
+        cart.products = [];
+        await cart.save();
       }
 
       // Calcular el amount sumando el precio de todos los productos del carrito
@@ -49,7 +52,6 @@ export const cartServices = {
         const quantity = Number(product.quantity);
         amount += price * quantity;
       });
-
 
       // Crear el ticket
       const ticket = {
