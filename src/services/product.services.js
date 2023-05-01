@@ -74,3 +74,28 @@ export const deleteProduct = async (pid) => {
   }
   return product;
 };
+
+export const getAvailableStock = async (pid) => {
+  try {
+    const product = await managerProducts.getElementById(pid);
+    if (!product) throw new Error("Product not found");
+    return product.stock;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const updateStock = async (pid, new_stock) => {
+
+  try {
+    const product = await managerProducts.getElementById(pid);
+    if (!product) throw new Error("Product not found");
+
+    product.stock = new_stock;
+    await product.save();
+
+    return product;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
