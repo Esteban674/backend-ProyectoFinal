@@ -63,7 +63,7 @@ const initializePassport = () => {
         }))
 
     //Inicializar la session del user
-    passport.serializeUser((user, done) => {
+    passport.serializeUser(({user}, done) => {
         done(null, user._id );
     })
 
@@ -84,7 +84,8 @@ const initializePassport = () => {
             if (validatePassword(password, user.password)) { //Usuario y contraseña validos
                 const accessToken = generateToken(user)
                 console.log(accessToken)
-                return done(null, user);
+                const data = { user, accessToken }
+                return done(null, data);
             }
 
             return done(null, false) //Contraseña no valida

@@ -5,7 +5,16 @@ import { passportCall, authorization } from "../utils/messageErrors.js";
 
 const routerSession = Router()
 
-routerSession.post("/login", passport.authenticate('login'), testLogin)
+routerSession.post("/login", passport.authenticate('login'), (req, res) => {
+  const token = req.user && req.user.accessToken;
+  console.log(req.user);
+  if (token) {
+      res.cookie('jwtCookie', token, { httpOnly: true, secure: true });
+      res.status(200).json({ message: "Login successful" });
+  } else {
+      res.status(401).json({ message: "Unauthorized" });
+  }
+})
 routerSession.get("/logout", destroySession)
 
 routerSession.get("/current", passportCall('jwt'), authorization('Admin'), (req, res) => {

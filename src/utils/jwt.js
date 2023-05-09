@@ -26,6 +26,12 @@ export const authToken = (req, res, next) => {
         }
         //Token descrifrado correctamente
         req.user = credentials.user
+
+        res.cookie('jwtCookie', token, {
+            maxAge: 12 * 60 * 60 * 1000, // 12 hours
+            httpOnly: true,
+        });
+
         next()
 
     })

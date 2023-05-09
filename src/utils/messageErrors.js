@@ -23,8 +23,8 @@ export const authorization = (rol) => {
         if (!req.user) {  //No hay un usuario
             return res.status(401).send({ error: "User no autorizado" })
         }
-        console.log(req.user.user[0]) //Acceso a las propiedades del user en JWT
-        if (req.user.user[0].rol != rol) {
+        //Acceso a las propiedades del user en JWT
+        if (req.user.user.rol != rol) {
             return res.status(403).send({ error: "User no tiene los permisos necesarios" })
         }
         next()
