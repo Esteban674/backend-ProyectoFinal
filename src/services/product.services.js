@@ -59,6 +59,11 @@ export const addProduct = async (newProduct) => {
   return product;
 };
 
+export const addProducts = async (newProducts) => {
+  const products = await managerProducts.addElements(newProducts);
+  return products;
+};
+
 export const updateProduct = async (pid, updatedProduct) => {
   const product = await managerProducts.updateElement(pid, updatedProduct);
   if (!product) {

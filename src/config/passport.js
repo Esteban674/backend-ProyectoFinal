@@ -6,6 +6,9 @@ import { managerUser } from '../services/user.services.js';
 import { managerCarts } from '../services/cart.services.js';
 import { createHash, validatePassword } from '../utils/bcrypt.js';
 import { generateToken } from "../utils/jwt.js";
+import CustomError from "../utils/errors/CustomError.js";
+import EErrors from "../utils/errors/enums.js";
+import { generateUserErrorInfo } from "../utils/errors/info.js";
 
 //Passport se va a trabajar como un middleware
 const LocalStrategy = local.Strategy; //Defino mi estrategia
@@ -21,10 +24,10 @@ const initializePassport = () => {
     }
 
     //Definir donde se aplican mis estrategias    
-    
+
     passport.use('jwt', new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), //Extrae el token desde las cookies
-        secretOrKey: process.env.PRIVATE_KEY_JWT 
+        secretOrKey: process.env.PRIVATE_KEY_JWT
     }, async (jwt_payload, done) => {
         try {
             return done(null, jwt_payload)
@@ -38,15 +41,23 @@ const initializePassport = () => {
         { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
             const { first_name, last_name, email, age } = req.body
             try {
-                const user = await managerUser.getElementByEmail(username)
-                if (user) {
+                if (!first_name || !last_name || !email) {
+                    CustomError.createError({
+                        name: "User creation error",
+                        cause: generateUserErrorInfo({ first_name, last_name, email }),
+                        message: "Error trying to create User",
+                        code: EErrors.INVALID_TYPES_ERROR
+                    })
+                }
+                const userExists = await managerUser.getElementByEmail(username)
+                if (userExists) {
                     return done(null, false)
                 }
                 const passwordHash = createHash(password)
                 //crear el carrito 
                 const cart = await managerCarts.addElement({ products: [] });
 
-                const userCreated = await managerUser.addElement({
+                const user = await managerUser.addElement({
                     first_name: first_name,
                     last_name: last_name,
                     email: email,
@@ -54,17 +65,19 @@ const initializePassport = () => {
                     password: passwordHash,
                     id_cart: cart._id
                 })
-                const accessToken = generateToken(userCreated)
+                const accessToken = generateToken(user)
                 console.log(accessToken)
-                return done(null, userCreated)
+                const data = { user, accessToken }
+                return done(null, data);
+                // return done(null, userCreated)
             } catch (error) {
                 return done(error)
             }
         }))
 
     //Inicializar la session del user
-    passport.serializeUser(({user}, done) => {
-        done(null, user._id );
+    passport.serializeUser(( {user} , done) => {
+        done(null, user._id);
     })
 
     //Eliminar la session del user
@@ -103,9 +116,9 @@ const initializePassport = () => {
         try {
             console.log(profile);
             const user = await managerUser.getElementByEmail(profile._json.email);
-            if(user){
+            if (user) {
                 done(null, user)
-            }else{
+            } else {
                 const userCreated = await managerUser.addElement({
                     first_name: profile._json.name,
                     last_name: '',

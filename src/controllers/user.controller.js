@@ -2,7 +2,7 @@ import { getUserById, createUser, getUserByEmail } from "../services/user.servic
 
 export const createUserController = async (req, res) => {
     try {
-        await createUser(req.body);
+        // await createUser(req.body); ya creado con Passport
         res.status(201).send({ status: "success", message: "User created" });
     } catch (error) {
         res.status(500).send({ message: error.message });

@@ -4,7 +4,7 @@ const data = await getManagerUsers();
 export const managerUser = new data.ManagerUserMongoDB();
 
 export const createUser = async (user) => {
-  await managerUser.createElement(user);
+  await managerUser.addElement(user);
 };
 
 export const getUserById = async (id) => {
