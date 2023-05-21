@@ -1,12 +1,13 @@
 import dotenv from 'dotenv'
 
-const enviroment = "DEVELOPMENT"
+const environment = "DEVELOPMENT"
 
 dotenv.config({
-    path: enviroment === "PRODUCTION" ? './.env.production' : './.env.development'
+    path: environment === "PRODUCTION" ? './.env.production' : './.env.development'
 })
 
 export default {
+    environment: environment,
     port: process.env.PORT,
     mongoURL: process.env.MONGODBURL,
     selectedDB: process.env.SELECTEDDB,
@@ -18,5 +19,6 @@ export default {
     clientSecret: process.env.CLIENT_SECRET,
     callBackUrl: process.env.CALLBACK_URL,
 }
+
 
 

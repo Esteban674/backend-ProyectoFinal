@@ -17,6 +17,7 @@ import compression from 'express-compression';
 import errorHandler from './middlewares/errors/index.js';
 import { productsMocks } from './mocks/faker-products.js';
 import { addProducts } from './services/product.services.js';
+import { addLogger } from './utils/logger.js';
 
 // import { create } from './express-handlebars'; para servers mas complejos
 
@@ -34,6 +35,19 @@ app.set('view engine', 'handlebars');
 app.set('views', path.resolve(__dirname, './views'));
 app.use(errorHandler);
 
+//logger
+app.use(addLogger)
+const ejemploError = 'Este es un error de ejemplo'
+app.get("/loggerTest", (req, res) => {
+  req.logger.fatal('Se produjo un error crítico. La aplicación se cerrará.'); // Un error crítico que impide el funcionamiento de la aplicación y requiere terminarla inmediatamente.
+  req.logger.error('Error al procesar la solicitud:', ejemploError); // Un error ocurrido durante el procesamiento de una solicitud.
+  req.logger.warning('Advertencia: La capacidad del sistema está casi al límite.'); // Una advertencia sobre un posible problema o situación límite.
+  req.logger.info(`Se ha recibido una solicitud ${req.method} en la ruta ${req.url}.`); // Información general sobre una acción o evento importante.
+  req.logger.http(`Solicitud ${req.method} recibida en la ruta ${req.url}.`,  req.body ); // Registro específico de solicitudes HTTP, incluyendo detalles como la ruta y el cuerpo de la solicitud.
+  req.logger.debug(`Variable X ejemplo:', ${new Date().toLocaleTimeString()}`); // Información útil para depurar y analizar el flujo de la aplicación durante el desarrollo.
+
+  res.send("Test Logger")
+})
 
 //Cookies
 app.use(cookieParser(process.env.PRIVATE_KEY_JWT));
