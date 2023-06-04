@@ -4,6 +4,7 @@ import session from 'express-session';
 import cookieParser from "cookie-parser";
 import MongoStore from 'connect-mongo';
 import passport from 'passport'
+import nodemailer from 'nodemailer';
 import { productManager } from "./controllers/product.controllerFS.js";
 import fileDirName from './utils/path.js';
 import { engine } from 'express-handlebars';
@@ -137,6 +138,33 @@ app.get('/register', async (req, res) => {
 app.get('/login', async (req, res) => {
   res.render('login', {
   });
+})
+
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD,
+    authMethod: 'LOGIN',
+  },
+});
+
+//Restablecer password de usuario
+app.get('/mail', async (req, res) => {
+  const resultado = await transporter.sendMail({
+    from: 'Ecommerce',
+    to: 'estebanperea@gmail.com',
+    subject: 'Restablecer contraseña',
+    html: '<h1>Restablecer contraseña</h1><p>Para restablecer tu contraseña, haz click en el siguiente enlace:</p><a href="http://localhost:8080/resetpassword">Restablecer contraseña</a>',
+    attachments: [],
+  });
+  res.send('Email enviado');
+})
+
+app.get('/resetpassword', async (req, res) => {
+  res.render('resetPassword', {});
 })
 
 app.set("port", process.env.PORT || 5000)
