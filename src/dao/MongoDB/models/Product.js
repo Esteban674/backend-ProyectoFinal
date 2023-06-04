@@ -11,6 +11,7 @@ const productSchema = new Schema({
   stock: { type: Number, required: true },
   status: { type: Boolean, default: true },
   category: { type: String, required: true, index: true },
+  owner: { type: String},
 });
 
 productSchema.plugin(paginate);

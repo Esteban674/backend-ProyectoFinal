@@ -57,5 +57,14 @@ export class ManagerUserMongoDB extends ManagerMongoDB {
         }
     }
 
+    async updateUserPassword(id, newPassword) {
+        super.setConnection();
+        try {
+            return await this.model.findByIdAndUpdate(id, { password: newPassword }, { new: true });
+        } catch (error) {
+            return error;
+        }
+    }
+
 
 }

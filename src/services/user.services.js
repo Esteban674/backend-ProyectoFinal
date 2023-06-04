@@ -30,3 +30,7 @@ export const getUserByIdCart = async (id) => {
   }
   return user;
 };
+
+export const updateUserPassword = async (id, newPassword) => {
+  await managerUser.updateUserPassword(id, { password: newPassword });
+};

@@ -19,6 +19,7 @@ import errorHandler from './middlewares/errors/index.js';
 import { productsMocks } from './mocks/faker-products.js';
 import { addProducts } from './services/product.services.js';
 import { addLogger } from './utils/logger.js';
+import { generateResetToken, isTokenExpired } from './services/password.services.js';
 
 // import { create } from './express-handlebars'; para servers mas complejos
 
@@ -151,8 +152,15 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const tokenStore = {}; // Objeto para almacenar los tokens generados
+
 //Restablecer password de usuario
 app.get('/mail', async (req, res) => {
+  const { email } = req.query;
+  const { token, timestamp } = generateResetToken(email);
+  
+  res.cookie('resetToken', { token, timestamp }, { maxAge: 3600000 }); // Configurar la cookie con el nombre "resetToken" y una duración de 1 hora
+
   const resultado = await transporter.sendMail({
     from: 'Ecommerce',
     to: 'estebanperea@gmail.com',
@@ -160,12 +168,21 @@ app.get('/mail', async (req, res) => {
     html: '<h1>Restablecer contraseña</h1><p>Para restablecer tu contraseña, haz click en el siguiente enlace:</p><a href="http://localhost:8080/resetpassword">Restablecer contraseña</a>',
     attachments: [],
   });
-  res.send('Email enviado');
+  res.send('Para restablecer la contraseña se le ha enviado un email a su casilla de correo, por favor revise su bandeja de entrada');
 })
 
 app.get('/resetpassword', async (req, res) => {
+  const { resetToken } = req.cookies;
+  
+  if (!resetToken || isTokenExpired(resetToken.timestamp)) {
+    return res.redirect('http://localhost:8080/login');
+  }
+  
+  res.clearCookie('resetToken'); // Eliminar la cookie después de verificarla, si lo deseas
+  
   res.render('resetPassword', {});
-})
+});
+
 
 app.set("port", process.env.PORT || 5000)
 
