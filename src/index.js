@@ -2,6 +2,8 @@ import config from './config/config.js';
 import express from 'express';
 import session from 'express-session';
 import cookieParser from "cookie-parser";
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
 import MongoStore from 'connect-mongo';
 import passport from 'passport'
 import nodemailer from 'nodemailer';
@@ -86,6 +88,21 @@ app.get('/mockingproducts', async (req, res) => {
     res.send(error);
   }
 })
+
+//Swagger
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: "E-commerce API",
+      description: "API e-commerce para el proyecto del curso de Backend de Coderhouse",
+    }
+  },
+  apis: [`${__dirname}/docs/**/*.yaml`],
+};
+
+const specs = swaggerJSDoc(swaggerOptions);
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 //Rutas de cookies
 app.get('/setCookie', (req, res) =>{

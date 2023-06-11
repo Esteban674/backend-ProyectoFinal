@@ -1,0 +1,255 @@
+paths: 
+  /api/cart:
+    get:
+      summary: "Consultar todos los carritos de compra" 
+      tags: 
+        - "Cart"
+      responses:
+        "200":
+          description: "Carritos obtenidos correctamente"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Cart"
+        "500":
+          description: "Error al obtener los carritos"
+    post:
+      summary: "Crear un carrito de compra" 
+      tags: 
+        - "Cart"
+      requestBody:
+        $ref: "#/components/requestBodies/updateCart"
+      responses:
+        "200":
+          description: "Carrito creado correctamente"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "500":
+          description: "Error al crear el carrito"
+
+  /api/cart/{cid}:
+    get:
+      summary: "Consultar un carrito de compra por id" 
+      tags: 
+        - "Cart"
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: "Id del carrito de compra"
+      responses:
+        "200":
+          description: "Carrito obtenido correctamente"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "404":
+          description: "Carrito no encontrado"
+        "500":
+          description: "Error al obtener el carrito"
+    put:
+      summary: "Actualizar un carrito de compra por id" 
+      tags: 
+        - "Cart"
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: "Id del carrito de compra"
+      requestBody:
+        $ref: "#/components/requestBodies/updateCart"
+      responses:
+        "200":
+          description: "Carrito actualizado correctamente"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "404":
+          description: "Carrito no encontrado"
+        "500":
+          description: "Error al actualizar el carrito"
+    delete:
+      summary: "Eliminar un carrito de compra por id" 
+      tags: 
+        - "Cart"
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: "Id del carrito de compra"
+      responses:
+        "200":
+          description: "Carrito eliminado correctamente"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "404":
+          description: "Carrito no encontrado"
+        "500":
+          description: "Error al eliminar el carrito"
+                
+  /api/cart/{cid}/product/{pid}:
+    post:
+      summary: "Agregar un producto a un carrito de compra" 
+      tags: 
+        - "Cart"
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: "Id del carrito de compra"
+        - in: path
+          name: pid
+          schema:
+            type: string
+          required: true
+          description: "Id del producto"
+      requestBody:
+        $ref: "#/components/requestBodies/updateCart"
+      responses:
+        "200":
+          description: "Producto agregado correctamente"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "404":
+          description: "Carrito no encontrado"
+        "500":
+          description: "Error al agregar el producto al carrito"
+    delete:
+      summary: "Eliminar un producto de un carrito de compra" 
+      tags: 
+        - "Cart"
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: "Id del carrito de compra"
+        - in: path
+          name: pid
+          schema:
+            type: string
+          required: true
+          description: "Id del producto"
+      responses:
+        "200":
+          description: "Producto eliminado correctamente"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "404":
+          description: "Carrito no encontrado"
+        "500":
+          description: "Error al eliminar el producto del carrito"
+    put:
+      summary: "Actualizar un producto de un carrito de compra" 
+      tags: 
+        - "Cart"
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: "Id del carrito de compra"
+        - in: path
+          name: pid
+          schema:
+            type: string
+          required: true
+          description: "Id del producto"
+      requestBody:
+        $ref: "#/components/requestBodies/updateCart"
+      responses:
+        "200":
+          description: "Producto actualizado correctamente"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "404":
+          description: "Carrito no encontrado"
+        "500":
+          description: "Error al actualizar el producto del carrito"
+
+  /api/cart/{cid}/purchase:
+    post:
+      summary: "Realizar una compra" 
+      tags: 
+        - "Cart"
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: "Id del carrito de compra"
+      responses:
+        "200":
+          description: "Compra realizada correctamente"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "404":
+          description: "Carrito no encontrado"
+        "500":
+          description: "Error al realizar la compra"
+
+components:
+  schemas:
+    Cart: 
+      type: object
+      properties:
+        products: 
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+                description: "Id del producto"
+              quantity:
+                type: number
+                description: "Cantidad del producto"
+      example:
+        products: 
+          - product: "5f8a9b9b9b9b9b9b9b9b9b9b"
+            quantity: 2
+          - product: "5f8a9b9b9b9b9b9b9b9b9b9b"
+            quantity: 1
+  requestBodies:
+    updateCart:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              product:
+                type: string
+                description: "Id del producto"
+              quantity:
+                type: number
+                description: "Cantidad del producto"
+            example:
+              product: "5f8a9b9b9b9b9b9b9b9b9b9b"
+              quantity: 2
