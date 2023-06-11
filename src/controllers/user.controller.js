@@ -46,3 +46,27 @@ export const resetPasswordController = async (req, res) => {
         res.status(500).send({ message: error.message });
     }
 };
+
+export const changeRoleController = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const user = await getUserById(userId);
+
+        // Verificar el rol actual del usuario
+        let newRole = "";
+        if (user.role === "User") {
+            newRole = "Premium";
+        } else if (user.role === "Premium") {
+            newRole = "User";
+        } else {
+            return res.status(400).send({ message: "Rol inválido." });
+        }
+
+        // Actualizar el rol del usuario en la base de datos
+        await updateUserRole(userId, newRole);
+
+        res.status(200).send({ message: "Rol actualizado exitosamente." });
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};

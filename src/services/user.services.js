@@ -34,3 +34,8 @@ export const getUserByIdCart = async (id) => {
 export const updateUserPassword = async (id, newPassword) => {
   await managerUser.updateUserPassword(id, { password: newPassword });
 };
+
+
+export const updateUserRole = async (id, newRole) => {
+  await managerUser.updateUserRole(id, { role: newRole });
+};

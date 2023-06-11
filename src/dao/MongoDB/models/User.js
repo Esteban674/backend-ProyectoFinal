@@ -66,5 +66,13 @@ export class ManagerUserMongoDB extends ManagerMongoDB {
         }
     }
 
+    async updateUserRole(id, newRole) {
+        super.setConnection();
+        try {
+            return await this.model.findByIdAndUpdate(id, { rol: newRole }, { new: true });
+        } catch (error) {
+            return error;
+        }
+    }
 
 }

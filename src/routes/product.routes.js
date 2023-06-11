@@ -7,7 +7,7 @@ const routerProduct = Router();
 routerProduct.get('/', productController.getAllProducts);
 routerProduct.get('/:pid', productController.getProductById);
 routerProduct.post('/', passportCall('jwt'), authorization('Admin'), productController.addProduct);
-routerProduct.delete('/:pid', productController.deleteProduct);
+routerProduct.delete('/:pid', authorization('Premium'), productController.deleteProduct);
 routerProduct.put('/:pid', productController.updateProduct);
 
 
