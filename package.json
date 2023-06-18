@@ -4,7 +4,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/User.test.js",
+    "testMocha": "mocha test/User.test.js",
+    "testChai": "mocha test/UserChai.test.js",
+    "testSupertest": "mocha test/Supertest.test.js",
     "dev": "nodemon src/index.js"
   },
   "keywords": [],
@@ -12,8 +14,10 @@
   "license": "ISC",
   "devDependencies": {
     "@faker-js/faker": "^8.0.0",
+    "chai": "^4.3.7",
     "mocha": "^10.2.0",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "supertest": "^6.3.3"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",

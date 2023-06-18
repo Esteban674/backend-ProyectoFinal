@@ -38,7 +38,7 @@ export class ManagerMongoDB {
     }
 
     async getElements() {
-        this.setConnection()
+        await this.setConnection()
         try {
             return await this.model.find()
         } catch (error) {

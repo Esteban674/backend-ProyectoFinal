@@ -1,30 +1,57 @@
+import config from '../src/config/config.js';
 import mongoose from "mongoose";
-import userModel from "../src/dao/models/User.js";
+import { ManagerUserMongoDB } from "../src/dao/MongoDB/models/User.js";
 import Assert from 'assert'
 
-const assert = Assert.strict;
-await mongoose.connect(process.env.MONGODBURL)
+await mongoose.connect(process.env.MONGODBURL).then(() => console.log("DB is connected"))
 
-const data = await getManagerUsers();
-const managerUser = new ManagerUserMongoDB();
-console.log(managerUser);
+const assert = Assert.strict;
 
 describe("Testing User", () => {
 
-  before(async () => {
-
+  before(async function () {
+    this.managerUser = new ManagerUserMongoDB();
   });
 
   beforeEach(function () {
-    this.timeout(10000);
+    this.timeout(6000);
   });
 
   it("Consultar todos los usuarios de mi BBD", async function () {
     try {
-      const resultado = await managerUser.getElements();
+      const resultado = await this.managerUser.getElements();
       assert.strictEqual(Array.isArray(resultado), true);
+      console.log(resultado);
     } catch (error) {
       throw error;
     }
   });
+
+  it("Crear un nuevo usuario", async function () {
+    const newUser = {
+      first_name: "Peter",
+      last_name: "Perez",
+      email: "peter@peter.com",
+      age: 20,
+      rol: "User",
+      password: "1234",
+    }
+    try {
+      const resultado = await this.managerUser.addElement(newUser)
+      assert.ok(resultado._id) //Reviso si se guardo correctamente el usuario
+    } catch (error) {
+      throw error;
+    }
+
+  })
+
+  it("Consultar a un usuario dado su email", async function () {
+    const email = "peter@peter.com"
+    try {
+      const user = await this.managerUser.getElementByEmail({ email: email })
+      assert.strictEqual(typeof user, 'object')
+    } catch (error) {
+      throw error;
+    }
+  })
 });
