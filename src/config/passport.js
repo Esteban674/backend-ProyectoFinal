@@ -95,6 +95,9 @@ const initializePassport = () => {
                 return done(null, false)
             }
             if (validatePassword(password, user.password)) { //Usuario y contraseña validos
+                user.last_connection = new Date(); // Actualiza la última conexión al iniciar sesión
+                await managerUser.updateElement(user.id, user); // Guarda los cambios en el usuario
+
                 const accessToken = generateToken(user)
                 console.log(accessToken)
                 const data = { user, accessToken }

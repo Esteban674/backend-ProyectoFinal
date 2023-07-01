@@ -39,6 +39,7 @@ app.set('view engine', 'handlebars');
 app.set('views', path.resolve(__dirname, './views'));
 app.use(errorHandler);
 
+
 //logger
 app.use(addLogger)
 const ejemploError = 'Este es un error de ejemplo'

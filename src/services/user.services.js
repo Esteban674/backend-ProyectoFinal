@@ -39,3 +39,7 @@ export const updateUserPassword = async (id, newPassword) => {
 export const updateUserRole = async (id, newRole) => {
   await managerUser.updateUserRole(id, { rol: newRole });
 };
+
+export const updateUser = async (id, newUser) => {
+  await managerUser.updateElement(id, newUser);
+}

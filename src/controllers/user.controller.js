@@ -1,4 +1,4 @@
-import { getUserById, createUser, getUserByEmail, updateUserPassword, updateUserRole } from "../services/user.services.js";
+import { getUserById, createUser, getUserByEmail, updateUserPassword, updateUserRole, updateUser } from "../services/user.services.js";
 
 export const createUserController = async (req, res) => {
     try {
@@ -66,5 +66,29 @@ export const changeRoleController = async (req, res) => {
         res.status(201).send({ message: "Rol actualizado exitosamente." });
     } catch (error) {
         res.status(500).send({ message: error.message });
+    }
+};
+
+export const uploadDocumentsController = async (req, res) => {
+    const userId = req.params.uid;
+    const files = req.files;
+
+    try {
+        const user = await getUserById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Actualizar el estado de carga de los documentos en el usuario
+        user.documents = files.map((file) => ({
+            name: file.originalname,
+            reference: file.path,
+        }));
+        await updateUser(userId, user);
+
+        res.status(200).json({ message: "Documents uploaded successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };
