@@ -1,4 +1,13 @@
-import { getUserById, createUser, getUserByEmail, updateUserPassword, updateUserRole, updateUser } from "../services/user.services.js";
+import { getUserById, getUserByEmail, updateUserPassword, updateUserRole, updateUser, getAllUsers, deleteInactiveUsersService } from "../services/user.services.js";
+
+export const getAllUsersController = async (req, res) =>{
+    try {
+        const users = await getAllUsers();
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
 export const createUserController = async (req, res) => {
     try {
@@ -92,3 +101,12 @@ export const uploadDocumentsController = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const deleteInactiveUsersController = async (req, res) => {
+    try {
+        await deleteInactiveUsersService();
+        res.status(200).json({ message: "Inactive users deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}

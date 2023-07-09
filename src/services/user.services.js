@@ -3,6 +3,15 @@ import { getManagerUsers } from "../dao/daoManager.js";
 const data = await getManagerUsers();
 export const managerUser = new data.ManagerUserMongoDB();
 
+export const getAllUsers = async () => {
+  try {
+    const users = await managerUser.getAllUserDTOs();
+    return users;
+  } catch (error) {
+    throw new Error('Error fetching users');
+  }
+}
+
 export const createUser = async (user) => {
   await managerUser.addElement(user);
 };
@@ -42,4 +51,8 @@ export const updateUserRole = async (id, newRole) => {
 
 export const updateUser = async (id, newUser) => {
   await managerUser.updateElement(id, newUser);
+}
+
+export const deleteInactiveUsersService = async () => {
+  await managerUser.deleteInactiveUsers();
 }
