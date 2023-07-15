@@ -202,7 +202,7 @@ app.get('/resetpassword', async (req, res) => {
 });
 
 
-app.set("port", process.env.PORT || 5000)
+app.set("port", process.env.PORT || 8080)
 
 const server = app.listen(app.get("port"), () => console.log(`Server on port ${app.get("port")}`))
 
