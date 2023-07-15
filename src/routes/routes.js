@@ -9,7 +9,7 @@ import routerGithub from "./github.routes.js";
 const router = Router()
 
 router.use('/api/products', routerProduct);
-router.use('/api/cart', routerCart);
+router.use('/api/carts', routerCart);
 router.use('/api/users', routerUser);
 router.use('/api/session', routerSession)
 router.use('/session', routerGithub)
