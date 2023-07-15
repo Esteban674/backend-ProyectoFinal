@@ -10,5 +10,4 @@ routerProduct.post('/', passportCall('jwt'), authorization('Admin'), productCont
 routerProduct.delete('/:pid', authorization('Admin'), productController.deleteProduct);
 routerProduct.put('/:pid', productController.updateProduct);
 
-
 export default routerProduct;
