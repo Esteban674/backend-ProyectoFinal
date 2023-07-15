@@ -1,10 +1,12 @@
 import { Router } from "express";
 import passport from "passport";
-import { destroySession, testLogin } from "../controllers/session.controller.js";
+import { destroySession } from "../controllers/session.controller.js";
 import { passportCall, authorization } from "../utils/messageErrors.js";
+import { createUserController } from "../controllers/user.controller.js";
 
 const routerSession = Router()
 
+routerSession.post("/register", passport.authenticate('register'), createUserController);
 routerSession.post("/login", passport.authenticate('login'), (req, res) => {
   const token = req.user && req.user.accessToken;
   console.log(req.user);
