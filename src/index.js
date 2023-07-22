@@ -214,30 +214,30 @@ const io = new Server(server)
 const data = await getManagerMessages()
 const managerMessage = new data.ManagerMessageMongoDB;
 
-io.on("connection", async (socket) => {
-  console.log("Cliente conectado");
-  socket.on("message", async (info) => {
-    managerMessage.addElement(info).then(() => {
-        managerMessage.getElements().then((mensajes) => {
-            socket.emit("allMessages", mensajes)
-        })
-    })
-})
+// io.on("connection", async (socket) => {
+//   console.log("Cliente conectado");
+//   socket.on("message", async (info) => {
+//     managerMessage.addElement(info).then(() => {
+//         managerMessage.getElements().then((mensajes) => {
+//             socket.emit("allMessages", mensajes)
+//         })
+//     })
+// })
 
-  socket.broadcast.emit('evento-admin', 'Hola desde server sos el Admin')
+//   socket.broadcast.emit('evento-admin', 'Hola desde server sos el Admin')
 
-  socket.emit('evento-general', "Hola a todos los usuarios")
+//   socket.emit('evento-general', "Hola a todos los usuarios")
 
-  const products = await productManager.getProducts();
+//   const products = await productManager.getProducts();
   
-  socket.emit('ListProducts', products);
+//   socket.emit('ListProducts', products);
 
-  socket.on('addProduct', async data => {
-    socket.emit('ListProducts', await productManager.getProducts());
-  })
+//   socket.on('addProduct', async data => {
+//     socket.emit('ListProducts', await productManager.getProducts());
+//   })
 
-  socket.on('deleteProduct', async data => {
-    socket.emit('ListProducts', await productManager.getProducts());
-  })
+//   socket.on('deleteProduct', async data => {
+//     socket.emit('ListProducts', await productManager.getProducts());
+//   })
   
-})
+// })
