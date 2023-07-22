@@ -236,8 +236,8 @@ io.on("connection", async (socket) => {
     socket.emit('ListProducts', await productManager.getProducts());
   })
 
-//   socket.on('deleteProduct', async data => {
-//     socket.emit('ListProducts', await productManager.getProducts());
-//   })
+  socket.on('deleteProduct', async data => {
+    socket.emit('ListProducts', await productManager.getProducts());
+  })
   
-// })
+})
