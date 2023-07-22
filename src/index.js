@@ -22,6 +22,7 @@ import { productsMocks } from './mocks/faker-products.js';
 import { addProducts } from './services/product.services.js';
 import { addLogger } from './utils/logger.js';
 import { generateResetToken, isTokenExpired } from './services/password.services.js';
+import cors from 'cors';
 
 // import { create } from './express-handlebars'; para servers mas complejos
 
@@ -39,6 +40,8 @@ app.set('view engine', 'handlebars');
 app.set('views', path.resolve(__dirname, './views'));
 app.use(errorHandler);
 
+//CORS
+app.use(cors());
 
 //logger
 app.use(addLogger)

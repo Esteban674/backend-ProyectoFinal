@@ -73,7 +73,6 @@ export const cartServices = {
     try {
       managerCarts.setConnection();
       const carts = await managerCarts.model.find().populate("products.product");
-      console.log(JSON.stringify(carts));
       return carts;
     } catch (error) {
       throw new Error(error.message);
@@ -83,7 +82,7 @@ export const cartServices = {
   getCartById: async (cid) => {
     try {
       managerCarts.setConnection();
-      const cart = await managerCarts.model.findById(cid).populate("products.product");
+      const cart = await managerCarts.model.findById(cid).populate({ path: "products.product", model: "products"});
       if (!cart) throw new Error("Cart not found");
       return cart;
     } catch (error) {

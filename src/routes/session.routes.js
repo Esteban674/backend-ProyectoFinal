@@ -12,7 +12,7 @@ routerSession.post("/login", passport.authenticate('login'), (req, res) => {
   console.log(req.user);
   if (token) {
       res.cookie('jwtCookie', token, { httpOnly: true, secure: true });
-      res.status(200).json({ message: "Login successful" });
+      res.status(200).json({ message: "Login successful", payload: req.user });
   } else {
       res.status(401).json({ message: "Unauthorized" });
   }

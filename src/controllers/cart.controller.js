@@ -18,7 +18,7 @@ export const cartController = {
     try {
       managerCarts.setConnection();
       const carts = await managerCarts.model.find().populate("products.product");
-      console.log(JSON.stringify(carts));
+      // console.log(JSON.stringify(carts));
       res.status(200).json(carts);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -29,8 +29,9 @@ export const cartController = {
     const { cid } = req.params;
     try {
       managerCarts.setConnection();
-      const cart = await managerCarts.getElementById(cid)
+      const cart = await managerCarts.model.findById(cid).populate({ path: "products.product", model: "products"});
       if (!cart) throw new Error("Cart not found");
+      // console.log(JSON.stringify(cart));
       res.status(200).json(cart);
     } catch (error) {
       res.status(404).json({ message: error.message });
